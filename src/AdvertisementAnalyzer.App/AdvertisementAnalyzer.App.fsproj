@@ -6,13 +6,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Domain.fs" />
+    <Compile Include="Contracts.fs" />
+    <Compile Include="PaddleOcrProvider.fs" />
+    <Compile Include="YoloObjectDetector.fs" />
+    <Compile Include="CaptionProviders.fs" />
+    <Compile Include="AdvertisementPipeline.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="OpenCvSharp4" Version="4.13.0.20260318" />
+    <PackageReference Include="OpenCvSharp4.runtime.ubuntu.22.04-x64" Version="4.11.0.20250507" />
+    <PackageReference Include="Sdcb.PaddleInference.runtime.linux.x64" Version="3.1.0.54" />
     <PackageReference Include="Sdcb.PaddleInference.runtime.win64.mkl" Version="3.1.0.54" />
     <PackageReference Include="Sdcb.PaddleOCR" Version="3.0.1" />
+    <PackageReference Include="YoloDotNet" Version="4.2.0" />
   </ItemGroup>
 
 </Project>
