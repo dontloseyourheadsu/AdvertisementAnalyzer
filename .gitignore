@@ -478,5 +478,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Vim temporary swap files
-*.swp
+# Project specific
+output/
+data/
+paddleocr-models/
+fsharp_output/
+app-exteriores/
