@@ -1,0 +1,12 @@
+services:
+  fsharp-analyzer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./data/dataset:/app/dataset:ro
+      - ./output:/app/output
+      - ./data/billboard_best.onnx:/app/billboard_best.onnx:ro
+    environment:
+      - ROBOFLOW_API_KEY=lbkT0HXWIMgnCrun6I4u
+    command: ["run", "--dataset", "/app/dataset", "--output", "/app/output", "--yolo-weights", "/app/billboard_best.onnx", "--detect", "--lang", "es"]
