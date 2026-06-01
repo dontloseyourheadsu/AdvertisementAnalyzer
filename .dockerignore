@@ -1,0 +1,7 @@
+**/.git
+**/bin
+**/obj
+**/fsharp_output
+**/app-exteriores/output
+**/app-exteriores/analyzer/__pycache__
+**/app-exteriores/analyzer/.git
