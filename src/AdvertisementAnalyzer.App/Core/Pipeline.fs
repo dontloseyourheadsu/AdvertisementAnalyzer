@@ -14,7 +14,7 @@ type StructureData = {
     StandardOcr: string
     VisualOcr: string
     Caption: string
-    FinalText: string
+    Details: AdDetails
 }
 
 type AnalysisPipeline(useDetect: bool, useVlm: bool, lang: string, yoloWeights: string, modelPath: string option) =
@@ -102,7 +102,7 @@ type AnalysisPipeline(useDetect: bool, useVlm: bool, lang: string, yoloWeights: 
 
                     let mutable visualOcr = ""
                     let mutable caption = ""
-                    let mutable finalText = standardText
+                    let mutable details = { Brand = "Generico"; Category = "Otros"; StructureType = "Espectacular"; TextContent = standardText; Items = [||] }
 
                     if useVlm then
                         match florence with
@@ -116,9 +116,15 @@ type AnalysisPipeline(useDetect: bool, useVlm: bool, lang: string, yoloWeights: 
 
                         match llamaJudge with
                         | Some j ->
-                            finalText <- j.Reconcile(standardText, visualOcr, caption, lang)
-                            printfn "  Reconciled Text (Judge): %s" finalText
-                        | None -> ()
+                            details <- j.Reconcile(standardText, visualOcr, caption, lang)
+                            printfn "  Reconciled Details (Judge):\n    Brand: %s\n    Category: %s\n    Structure Type: %s\n    Text: %s\n    Items: %s" 
+                                details.Brand details.Category details.StructureType details.TextContent (String.concat ", " details.Items)
+                        | None ->
+                            let tempJudge = new LlamaJudge(None)
+                            details <- tempJudge.Reconcile(standardText, visualOcr, caption, lang)
+                    else
+                        let tempJudge = new LlamaJudge(None)
+                        details <- tempJudge.Reconcile(standardText, visualOcr, caption, lang)
 
                     structures <- {
                         ImageName = fileInfo.Name
@@ -128,7 +134,7 @@ type AnalysisPipeline(useDetect: bool, useVlm: bool, lang: string, yoloWeights: 
                         StandardOcr = standardText
                         VisualOcr = visualOcr
                         Caption = caption
-                        FinalText = finalText
+                        Details = details
                     } :: structures
 
                     let boxColor = 
@@ -139,8 +145,13 @@ type AnalysisPipeline(useDetect: bool, useVlm: bool, lang: string, yoloWeights: 
 
                     Cv2.Rectangle(annotatedImage, new OpenCvSharp.Point(cx1, cy1), new OpenCvSharp.Point(cx2, cy2), boxColor, 3)
 
-                    let label = if finalText.Length > 30 then sprintf "#%d: %s..." (idx + 1) (finalText.Substring(0, 30)) else sprintf "#%d: %s" (idx + 1) finalText
-                    let labelText = if String.IsNullOrWhiteSpace(finalText) then sprintf "#%d: [No Text]" (idx + 1) else label
+                    let labelTextForImage = 
+                        if not (String.IsNullOrEmpty details.Brand) && details.Brand <> "Generico" then
+                            sprintf "#%d: %s | %s" (idx + 1) details.Brand details.StructureType
+                        else
+                            sprintf "#%d: %s" (idx + 1) details.StructureType
+                    let label = if labelTextForImage.Length > 30 then sprintf "%s..." (labelTextForImage.Substring(0, 30)) else labelTextForImage
+                    let labelText = if String.IsNullOrWhiteSpace(label) then sprintf "#%d: [No Brand]" (idx + 1) else label
 
                     let mutable baseline = 0
                     let textSize = Cv2.GetTextSize(labelText, HersheyFonts.HersheySimplex, 0.6, 2, &baseline)
@@ -186,16 +197,19 @@ type AnalysisPipeline(useDetect: bool, useVlm: bool, lang: string, yoloWeights: 
 
             try
                 use writer = new StreamWriter(csvPath, false, System.Text.Encoding.UTF8)
-                writer.WriteLine("image_name,structure_index,detection_method,box_coords,standard_ocr,visual_ocr,caption,final_text")
+                writer.WriteLine("image_name,structure_index,detection_method,box_coords,standard_ocr,visual_ocr,caption,brand,category,structure_type,text_content,items")
                 for s in allStructures do
                     let boxJson = JsonSerializer.Serialize(s.Box)
+                    let itemsJson = JsonSerializer.Serialize(s.Details.Items)
                     let escapeCsv (text: string) =
                         if String.IsNullOrEmpty(text) then "\"\""
                         else "\"" + text.Replace("\"", "\"\"") + "\""
                     
-                    let line = sprintf "%s,%d,%s,%s,%s,%s,%s,%s" 
+                    let line = sprintf "%s,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" 
                                     (escapeCsv s.ImageName) s.StructureIndex s.DetectionMethod (escapeCsv boxJson) 
-                                    (escapeCsv s.StandardOcr) (escapeCsv s.VisualOcr) (escapeCsv s.Caption) (escapeCsv s.FinalText)
+                                    (escapeCsv s.StandardOcr) (escapeCsv s.VisualOcr) (escapeCsv s.Caption)
+                                    (escapeCsv s.Details.Brand) (escapeCsv s.Details.Category) (escapeCsv s.Details.StructureType)
+                                    (escapeCsv s.Details.TextContent) (escapeCsv itemsJson)
                     writer.WriteLine(line)
                 printfn "CSV report generated successfully."
             with ex ->

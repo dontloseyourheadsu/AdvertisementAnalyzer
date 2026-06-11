@@ -14,7 +14,7 @@ RUN dotnet publish ./AdvertisementAnalyzer.App/AdvertisementAnalyzer.App.fsproj 
 FROM mcr.microsoft.com/dotnet/runtime:10.0 AS runtime
 WORKDIR /app
 
-# Install native dependencies for OpenCV and PaddleOCR
+# Install native dependencies for OpenCV, PaddleOCR, and Python
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     libgl1 \
@@ -27,10 +27,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libopencv-dev \
     libgtk-3-0 \
     libatk1.0-0 \
+    python3 \
+    python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
+# Install python dependencies
+RUN pip3 install --no-cache-dir --break-system-packages kagglehub
+
 COPY --from=build /app/publish .
+
+# Copy python script
+COPY src/download_kaggle.py ./src/
 
 # The application expects some models and datasets to be mounted or present.
 # We'll use the entry point to run the app.
 ENTRYPOINT ["dotnet", "AdvertisementAnalyzer.App.dll"]
+

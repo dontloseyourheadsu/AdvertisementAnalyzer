@@ -8,15 +8,35 @@ This is the F# implementation of the Street Advertisement Analyzer, replicated f
 
 The easiest way to run the analyzer is using Docker Compose.
 
+#### A. Download the Dataset into the Docker Volume
+The dataset is stored in a persistent Docker volume (`dataset-volume`) to keep the host clean. You can download the dataset into the volume using one of the following commands:
+
+* **Zenodo** (Free, no credentials needed):
+  ```bash
+  docker compose run fsharp-analyzer download --source zenodo --target /app/dataset
+  ```
+
+* **Kaggle** (Requires `KAGGLE_API_TOKEN` in your environment or `.env` file):
+  ```bash
+  docker compose run fsharp-analyzer download --source kaggle --target /app/dataset
+  ```
+
+* **Roboflow** (Requires `ROBOFLOW_API_KEY` in your environment or `.env` file):
+  ```bash
+  docker compose run fsharp-analyzer download --source roboflow --target /app/dataset --api-key YOUR_API_KEY
+  ```
+
+#### B. Run the Analysis Pipeline
+Once the dataset is downloaded, run the pipeline:
 ```bash
 docker compose up --build
 ```
 
 This will:
-1. Build the F# application using the .NET 10 SDK.
-2. Install all necessary native dependencies (OpenCV, Tesseract, etc.).
-3. Run the analysis pipeline on the images in `data/dataset/`.
-4. Save the results (annotated images and `analysis_report.csv`) to the `output/` directory.
+1. Build the F# application and install all necessary dependencies (OpenCV, Tesseract, Python, and Kagglehub).
+2. Run the analysis pipeline on the images in the persistent Docker volume `/app/dataset`.
+3. Save the results (annotated images and `analysis_report.csv`) to the host's `output/` directory.
+
 
 ### 2. Project Structure
 
