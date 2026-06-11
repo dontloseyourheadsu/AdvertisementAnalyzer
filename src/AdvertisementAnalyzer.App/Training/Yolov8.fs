@@ -43,33 +43,38 @@ type YoloTrainer() =
             printfn "Download finished."
         }
 
-    let runKaggleDownload (slug: string) (destinationDir: string) (token: string) =
+    let runPythonScript (scriptPath: string) (args: string) (envVars: (string * string) list) =
         try
-            printfn "Starting Kaggle download via kagglehub python script..."
             let startInfo = new System.Diagnostics.ProcessStartInfo()
             startInfo.FileName <- "python3"
-            startInfo.Arguments <- sprintf "src/download_kaggle.py %s %s" slug destinationDir
+            startInfo.Arguments <- sprintf "%s %s" scriptPath args
             startInfo.UseShellExecute <- false
             startInfo.RedirectStandardOutput <- true
             startInfo.RedirectStandardError <- true
             
-            if not (String.IsNullOrEmpty token) then
-                startInfo.EnvironmentVariables.["KAGGLE_API_TOKEN"] <- token
-            else
-                let envToken = Environment.GetEnvironmentVariable("KAGGLE_API_TOKEN")
-                if not (String.IsNullOrEmpty envToken) then
-                    startInfo.EnvironmentVariables.["KAGGLE_API_TOKEN"] <- envToken
+            for (key, value) in envVars do
+                if not (String.IsNullOrEmpty value) then
+                    startInfo.EnvironmentVariables.[key] <- value
 
             use proc = System.Diagnostics.Process.Start(startInfo)
-            proc.OutputDataReceived.Add(fun e -> if not (isNull e.Data) then printfn "  [Kaggle] %s" e.Data)
-            proc.ErrorDataReceived.Add(fun e -> if not (isNull e.Data) then printfn "  [Kaggle Error] %s" e.Data)
+            proc.OutputDataReceived.Add(fun e -> if not (isNull e.Data) then printfn "  [Python] %s" e.Data)
+            proc.ErrorDataReceived.Add(fun e -> if not (isNull e.Data) then printfn "  [Python Error] %s" e.Data)
             proc.BeginOutputReadLine()
             proc.BeginErrorReadLine()
             proc.WaitForExit()
             proc.ExitCode = 0
         with ex ->
-            printfn "Failed to run Kaggle downloader script: %s" ex.Message
+            printfn "Failed to run python script %s: %s" scriptPath ex.Message
             false
+
+    let runKaggleDownload (slug: string) (destinationDir: string) (token: string) =
+        printfn "Starting Kaggle download via kagglehub python script..."
+        let envToken = 
+            if not (String.IsNullOrEmpty token) then token 
+            else Environment.GetEnvironmentVariable("KAGGLE_API_TOKEN")
+        let env = if String.IsNullOrEmpty envToken then [] else [("KAGGLE_API_TOKEN", envToken)]
+        runPythonScript "src/download_kaggle.py" (sprintf "%s %s" slug destinationDir) env
+
 
     member this.DownloadDataset(datasetType: string, destinationDir: string, apiKey: string) =
         if datasetType.ToLower() = "kaggle" then
@@ -109,6 +114,9 @@ type YoloTrainer() =
 
     member this.Train(epochs: int, apiKey: string) =
         printfn "Starting YOLOv8 training for %d epochs..." epochs
-        printfn "Using Roboflow API Key: %s" (if String.IsNullOrEmpty apiKey then "None" else "***")
-        // In a full implementation, this downloads the dataset from Roboflow and runs YOLOv8 training.
-        printfn "Training complete."
+        let args = sprintf "--epochs %d --api-key %s" epochs apiKey
+        let success = runPythonScript "src/train_yolo.py" args []
+        if success then
+            printfn "Training completed successfully."
+        else
+            printfn "Training failed."

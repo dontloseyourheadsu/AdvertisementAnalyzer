@@ -22,7 +22,9 @@ type BrandEntry = {
 }
 
 type LlamaJudge(modelPath: string option) =
-    let ollamaUrl = "http://localhost:11434/api/generate"
+    let ollamaUrl = 
+        let envUrl = Environment.GetEnvironmentVariable("OLLAMA_URL")
+        if String.IsNullOrEmpty(envUrl) then "http://localhost:11434/api/generate" else envUrl
     let modelName = "gemma4:e4b"
 
     let brands =
@@ -36,6 +38,13 @@ type LlamaJudge(modelPath: string option) =
         with ex ->
             printfn "Failed to load brands database: %s" ex.Message
             [||]
+
+    let brandNamesList =
+        if brands.Length > 0 then
+            brands |> Array.map (fun b -> b.Name) |> String.concat ", "
+        else
+            "Coca-Cola, Telcel, Corona, OXXO"
+
 
     member private this.HeuristicAnalyze(standardOcr: string, visualOcr: string, caption: string) : AdDetails =
         let ocrLower = (standardOcr + " " + visualOcr).ToLowerInvariant()
@@ -115,8 +124,9 @@ type LlamaJudge(modelPath: string option) =
             client.Timeout <- TimeSpan.FromSeconds(15.0)
 
             let prompt = 
-                sprintf "Analiza los datos de este anuncio exterior en México:\n- Texto OCR detectado: \"%s\"\n- OCR Visual: \"%s\"\n- Descripción de la imagen (VLM): \"%s\"\n\nExtrae y devuelve un objeto JSON válido con los siguientes campos en español (no inventes datos si no los detectas):\n{\n  \"brand\": \"Marca del anuncio (ej. Coca-Cola, Telcel, Corona, OXXO, o 'Generico')\",\n  \"category\": \"Categoría (Bebidas, Alimentos, Telecomunicaciones, Finanzas, Comercio, Automotriz, etc.)\",\n  \"structure_type\": \"Tipo de estructura (Espectacular, Parabús, Barda, Pantalla Digital, Fachada, Lona)\",\n  \"text_content\": \"Texto principal legible en el anuncio\",\n  \"items\": [\"Lista\", \"de\", \"objetos\", \"visibles\"]\n}\nDevuelve exclusivamente el JSON sin explicaciones ni formato markdown."
-                    standardOcr visualOcr caption
+                sprintf "Analiza los datos de este anuncio exterior en México:\n- Texto OCR detectado: \"%s\"\n- OCR Visual: \"%s\"\n- Descripción de la imagen (VLM): \"%s\"\n\nExtrae y devuelve un objeto JSON válido con los siguientes campos en español (no inventes datos si no los detectas):\n{\n  \"brand\": \"Marca del anuncio. DEBE ser una de estas o 'Generico' si no coincide: [%s]\",\n  \"category\": \"Categoría (Bebidas, Alimentos, Telecomunicaciones, Finanzas, Comercio, Automotriz, etc.)\",\n  \"structure_type\": \"Tipo de estructura (Espectacular, Parabús, Barda, Pantalla Digital, Fachada, Lona)\",\n  \"text_content\": \"Texto principal legible en el anuncio\",\n  \"items\": [\"Lista\", \"de\", \"objetos\", \"visibles\"]\n}\nDevuelve exclusivamente el JSON sin explicaciones ni formato markdown."
+                    standardOcr visualOcr caption brandNamesList
+
 
             let requestBody = 
                 sprintf "{\"model\": \"%s\", \"prompt\": %s, \"format\": \"json\", \"stream\": false}"

@@ -31,15 +31,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install python dependencies
-RUN pip3 install --no-cache-dir --break-system-packages kagglehub
+# Install python dependencies (install CPU-only PyTorch to keep image smaller)
+RUN pip3 install --no-cache-dir --break-system-packages --index-url https://download.pytorch.org/whl/cpu torch
+RUN pip3 install --no-cache-dir --break-system-packages transformers timm einops pillow kagglehub ultralytics
 
 COPY --from=build /app/publish .
 
-# Copy python script
+# Copy python scripts
 COPY src/download_kaggle.py ./src/
+COPY src/vlm_service.py ./src/
+COPY src/train_yolo.py ./src/
 
 # The application expects some models and datasets to be mounted or present.
 # We'll use the entry point to run the app.
 ENTRYPOINT ["dotnet", "AdvertisementAnalyzer.App.dll"]
+
 
