@@ -484,3 +484,5 @@ data/
 paddleocr-models/
 fsharp_output/
 app-exteriores/
+dataset/
+
