@@ -4,9 +4,14 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./data/dataset:/app/dataset:ro
+      - dataset-volume:/app/dataset
       - ./output:/app/output
       - ./data/billboard_best.onnx:/app/billboard_best.onnx:ro
     environment:
-      - ROBOFLOW_API_KEY=lbkT0HXWIMgnCrun6I4u
+      - ROBOFLOW_API_KEY=${ROBOFLOW_API_KEY}
+      - KAGGLE_API_TOKEN=${KAGGLE_API_TOKEN}
     command: ["run", "--dataset", "/app/dataset", "--output", "/app/output", "--yolo-weights", "/app/billboard_best.onnx", "--detect", "--lang", "es"]
+
+volumes:
+  dataset-volume:
+
