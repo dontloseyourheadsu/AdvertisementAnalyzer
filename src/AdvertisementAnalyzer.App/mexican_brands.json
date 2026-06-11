@@ -1,0 +1,207 @@
+[
+  {
+    "name": "Telcel",
+    "category": "Telecomunicaciones",
+    "keywords": ["telcel", "amigo kit", "gigas", "megas", "red telcel"]
+  },
+  {
+    "name": "Movistar",
+    "category": "Telecomunicaciones",
+    "keywords": ["movistar", "telefonica"]
+  },
+  {
+    "name": "AT&T",
+    "category": "Telecomunicaciones",
+    "keywords": ["at&t", "att", "unefon"]
+  },
+  {
+    "name": "Bait",
+    "category": "Telecomunicaciones",
+    "keywords": ["bait", "mi bait", "bodega aurrera internet"]
+  },
+  {
+    "name": "Bimbo",
+    "category": "Alimentos",
+    "keywords": ["bimbo", "pan bimbo", "osito bimbo"]
+  },
+  {
+    "name": "Marinela",
+    "category": "Alimentos",
+    "keywords": ["marinela", "gansito", "pingüinos", "chocoroles"]
+  },
+  {
+    "name": "Barcel",
+    "category": "Alimentos",
+    "keywords": ["barcel", "takis", "chips barcel"]
+  },
+  {
+    "name": "Tía Rosa",
+    "category": "Alimentos",
+    "keywords": ["tia rosa", "doraditas", "tortillinas"]
+  },
+  {
+    "name": "Corona",
+    "category": "Bebidas",
+    "keywords": ["corona", "cerveza corona", "corona extra", "corona light"]
+  },
+  {
+    "name": "Tecate",
+    "category": "Bebidas",
+    "keywords": ["tecate", "cerveza tecate", "tecate light"]
+  },
+  {
+    "name": "Victoria",
+    "category": "Bebidas",
+    "keywords": ["victoria", "cerveza victoria"]
+  },
+  {
+    "name": "Indio",
+    "category": "Bebidas",
+    "keywords": ["indio", "cerveza indio"]
+  },
+  {
+    "name": "Modelorama",
+    "category": "Comercio",
+    "keywords": ["modelorama"]
+  },
+  {
+    "name": "Coca-Cola",
+    "category": "Bebidas",
+    "keywords": ["coca-cola", "coca cola", "cocacola", "coke", "sin azucar"]
+  },
+  {
+    "name": "Pepsi",
+    "category": "Bebidas",
+    "keywords": ["pepsi"]
+  },
+  {
+    "name": "Jarritos",
+    "category": "Bebidas",
+    "keywords": ["jarritos", "que buenos son"]
+  },
+  {
+    "name": "Peñafiel",
+    "category": "Bebidas",
+    "keywords": ["peñafiel"]
+  },
+  {
+    "name": "Jumex",
+    "category": "Bebidas",
+    "keywords": ["jumex", "frutzo"]
+  },
+  {
+    "name": "Lala",
+    "category": "Alimentos",
+    "keywords": ["lala", "leche lala", "yogur lala"]
+  },
+  {
+    "name": "Alpura",
+    "category": "Alimentos",
+    "keywords": ["alpura", "leche alpura"]
+  },
+  {
+    "name": "OXXO",
+    "category": "Comercio",
+    "keywords": ["oxxo"]
+  },
+  {
+    "name": "Pemex",
+    "category": "Automotriz",
+    "keywords": ["pemex", "gasolinera pemex", "magna", "premium"]
+  },
+  {
+    "name": "Oxxo Gas",
+    "category": "Automotriz",
+    "keywords": ["oxxo gas"]
+  },
+  {
+    "name": "Banco Azteca",
+    "category": "Servicios Financieros",
+    "keywords": ["banco azteca", "elektra banco", "guardadito"]
+  },
+  {
+    "name": "BBVA",
+    "category": "Servicios Financieros",
+    "keywords": ["bbva", "bancomer", "banco bbva"]
+  },
+  {
+    "name": "Citibanamex",
+    "category": "Servicios Financieros",
+    "keywords": ["citibanamex", "banamex", "tarjeta banamex"]
+  },
+  {
+    "name": "Banorte",
+    "category": "Servicios Financieros",
+    "keywords": ["banorte", "el banco fuerte de mexico"]
+  },
+  {
+    "name": "Coppel",
+    "category": "Comercio",
+    "keywords": ["coppel", "banco coppel", "bancompara"]
+  },
+  {
+    "name": "Elektra",
+    "category": "Comercio",
+    "keywords": ["elektra", "tiendas elektra"]
+  },
+  {
+    "name": "Soriana",
+    "category": "Comercio",
+    "keywords": ["soriana", "hiper soriana", "soriana super"]
+  },
+  {
+    "name": "Chedraui",
+    "category": "Comercio",
+    "keywords": ["chedraui", "super chedraui", "selecto chedraui"]
+  },
+  {
+    "name": "Bodega Aurrera",
+    "category": "Comercio",
+    "keywords": ["bodega aurrera", "aurrera", "mamá lucha"]
+  },
+  {
+    "name": "Walmart",
+    "category": "Comercio",
+    "keywords": ["walmart", "superama"]
+  },
+  {
+    "name": "Comex",
+    "category": "Otros",
+    "keywords": ["comex", "pinturas comex"]
+  },
+  {
+    "name": "Cemex",
+    "category": "Otros",
+    "keywords": ["cemex", "cemento cemex"]
+  },
+  {
+    "name": "Italika",
+    "category": "Automotriz",
+    "keywords": ["italika", "moto italika"]
+  },
+  {
+    "name": "Cinépolis",
+    "category": "Otros",
+    "keywords": ["cinepolis", "la capital del cine"]
+  },
+  {
+    "name": "Cinemex",
+    "category": "Otros",
+    "keywords": ["cinemex", "la magia del cine"]
+  },
+  {
+    "name": "Farmacias del Ahorro",
+    "category": "Comercio",
+    "keywords": ["farmacias del ahorro", "del ahorro"]
+  },
+  {
+    "name": "Farmacias Similares",
+    "category": "Comercio",
+    "keywords": ["farmacias similares", "simi", "dr. simi", "doctor simi"]
+  },
+  {
+    "name": "Farmacias Guadalajara",
+    "category": "Comercio",
+    "keywords": ["farmacias guadalajara", "superfarmacia"]
+  }
+]
